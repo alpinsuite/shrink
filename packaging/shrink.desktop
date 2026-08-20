@@ -1,0 +1,19 @@
+[Desktop Entry]
+Type=Application
+Name=Shrink
+GenericName=Image Resizer
+Comment=Resize images in batches to a format, a size or a file size
+# Icon is looked up by name in the hicolor theme, so packaging/icons/shrink-<n>.png
+# install to /usr/share/icons/hicolor/<n>x<n>/apps/shrink.png.
+Icon=shrink
+Exec=shrink %F
+Terminal=false
+Categories=Graphics;2DGraphics;RasterGraphics;Utility;
+Keywords=image;resize;batch;convert;compress;photo;
+# Everything the queue can decode, so a file manager offers Shrink under
+# "Open With" for the formats it actually accepts.
+MimeType=image/jpeg;image/png;image/webp;image/gif;image/bmp;image/tiff;image/x-targa;image/x-icon;image/vnd.adobe.photoshop;image/x-portable-anymap;image/x-portable-bitmap;image/x-portable-graymap;image/x-portable-pixmap;
+# 1.1 rather than 1.5: desktop-file-validate 0.26, which the Ubuntu 22.04
+# packaging container ships, rejects the newer spec version outright.
+Version=1.1
+StartupWMClass=shrink

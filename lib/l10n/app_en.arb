@@ -1,0 +1,215 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Shrink",
+  "@appTitle": {
+    "description": "Application name, shown in the window title and About dialog"
+  },
+  "appTagline": "Batch image resizer",
+  "windowMinimize": "Minimise",
+  "windowMaximize": "Maximise",
+  "windowRestore": "Restore",
+  "windowClose": "Close",
+
+  "menuFile": "File",
+  "menuEdit": "Edit",
+  "menuView": "View",
+  "menuHelp": "Help",
+  "menuTheme": "Theme",
+
+  "actionAddFiles": "Add Images...",
+  "actionAddFolder": "Add Folder...",
+  "actionRemoveSelected": "Remove Selected",
+  "actionClearQueue": "Clear List",
+  "actionStart": "Start",
+  "actionCancel": "Cancel",
+  "actionQuit": "Quit",
+  "actionResetTarget": "Reset Target",
+  "actionChooseOutputFolder": "Choose Output Folder...",
+  "actionRevealOutput": "Show in File Manager",
+  "actionAbout": "About Shrink",
+  "actionApply": "Apply",
+  "actionBrowse": "Browse...",
+
+  "keyCtrl": "Ctrl",
+  "@keyCtrl": {
+    "description": "Modifier key name as shown in a menu's shortcut column"
+  },
+  "keyShift": "Shift",
+  "keyAlt": "Alt",
+  "keyDelete": "Del",
+  "keyEnter": "Enter",
+
+  "themeSystem": "Follow the desktop",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+
+  "imagesFilterLabel": "Images",
+  "chooseOutputFolderConfirm": "Use this folder",
+
+  "dropHint": "Drop images or folders to add them",
+  "emptyQueueTitle": "Nothing to resize yet",
+  "emptyQueueHint": "Add images, or drop them anywhere in this window.",
+
+  "columnFile": "File",
+  "columnSource": "Source",
+  "columnOutput": "Output",
+  "columnChange": "Change",
+  "columnStatus": "Status",
+
+  "statusProbing": "Reading",
+  "statusReady": "Ready",
+  "statusUnreadable": "Unreadable",
+  "statusRunning": "Working",
+  "statusDone": "Done",
+  "statusSkipped": "Skipped",
+  "statusFailed": "Failed",
+  "statusOverBudget": "Over budget",
+
+  "failureUnreadable": "Not an image this application can read",
+  "failureNoEncoder": "This format can be read but not written. Choose a target format.",
+  "failureIo": "The file could not be written",
+
+  "dimensions": "{width} x {height}",
+  "@dimensions": {
+    "placeholders": {
+      "width": { "type": "int" },
+      "height": { "type": "int" }
+    }
+  },
+  "pixels": "{value} px",
+  "@pixels": {
+    "placeholders": { "value": { "type": "int" } }
+  },
+  "unitPixels": "px",
+  "@unitPixels": {
+    "description": "Unit shown beside a field that takes a pixel count"
+  },
+  "approximately": "~ {value}",
+  "@approximately": {
+    "description": "Marks a size that is modelled rather than measured",
+    "placeholders": { "value": { "type": "String", "example": "1.4 MB" } }
+  },
+  "percentSmaller": "{percent}% smaller",
+  "@percentSmaller": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
+  "percentLarger": "{percent}% larger",
+  "@percentLarger": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
+
+  "panelTarget": "Target",
+  "panelOutput": "Output",
+  "panelPreview": "Preview",
+
+  "fieldFormat": "Format",
+  "formatSameAsSource": "Same as source",
+  "fieldMaxEdge": "Longest edge",
+  "fieldQuality": "Quality",
+  "fieldMaxSize": "File size",
+  "limitDimensions": "Limit dimensions",
+  "limitFileSize": "Limit file size",
+  "qualityUnavailable": "{format} has no quality setting",
+  "@qualityUnavailable": {
+    "description": "Shown under the disabled quality slider for a lossless format",
+    "placeholders": { "format": { "type": "String", "example": "PNG" } }
+  },
+  "budgetByDimensionsOnly": "A size limit is met by reducing dimensions alone",
+
+  "recommendQualityForBudget": "Quality {value} would fit",
+  "@recommendQualityForBudget": {
+    "placeholders": { "value": { "type": "int" } }
+  },
+  "recommendEdgeForBudget": "{value} px would fit",
+  "@recommendEdgeForBudget": {
+    "placeholders": { "value": { "type": "int" } }
+  },
+  "recommendEdgeQualityExhausted": "Quality alone will not fit it; {value} px would",
+  "@recommendEdgeQualityExhausted": {
+    "placeholders": { "value": { "type": "int" } }
+  },
+  "recommendBudget": "These settings produce about {value}",
+  "@recommendBudget": {
+    "placeholders": { "value": { "type": "String", "example": "1.4 MB" } }
+  },
+  "budgetUnreachable": "No setting reaches this size",
+
+  "previewNoSelection": "Select a file to see it at these settings",
+  "previewUnwritable": "This format can be read but not written",
+  "previewOriginal": "Original",
+  "previewResult": "Result",
+  "previewShowBoth": "Both",
+  "@previewShowBoth": {
+    "description": "Shows the original and the result side by side in the enlarged preview"
+  },
+  "actionEnlargePreview": "Enlarge preview",
+  "previewMeasuring": "Measuring",
+  "previewQualityUsed": "quality {value}",
+  "@previewQualityUsed": {
+    "placeholders": { "value": { "type": "int" } }
+  },
+
+  "outputSameFolder": "Beside the originals",
+  "outputChosenFolder": "Into a folder",
+  "fieldSuffix": "Name suffix",
+  "fieldFolder": "Folder",
+  "fieldCollision": "If that name exists",
+  "collisionRename": "Add a number",
+  "collisionOverwrite": "Replace it",
+  "collisionSkip": "Skip the file",
+  "outputNoFolder": "No folder chosen",
+  "outputNeverOverwritesSource": "An original is never overwritten.",
+
+  "queueCount": "{count, plural, =0{No images} =1{1 image} other{{count} images}}",
+  "@queueCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "queueSelected": "{index} of {total}",
+  "@queueSelected": {
+    "placeholders": {
+      "index": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "batchProgress": "{done} of {total}",
+  "@batchProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "summaryWritten": "{count, plural, =1{1 written} other{{count} written}}",
+  "@summaryWritten": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "summarySkipped": "{count} skipped",
+  "@summarySkipped": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "summaryFailed": "{count} failed",
+  "@summaryFailed": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "summaryOverBudget": "{count} over budget",
+  "@summaryOverBudget": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "summarySaved": "{value} saved",
+  "@summarySaved": {
+    "placeholders": { "value": { "type": "String", "example": "18.2 MB" } }
+  },
+  "summaryCancelled": "Cancelled",
+  "summaryNoChange": "No smaller",
+
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": { "version": { "type": "String" } }
+  },
+  "aboutDescription": "Resizes images in batches to a format, a pixel size, a quality or a file size — and recommends the rest when you set one of them.",
+  "aboutBuiltWith": "Built with Flutter and the Slate widget kit.",
+
+  "buttonOk": "OK",
+  "buttonCancel": "Cancel",
+  "buttonClose": "Close"
+}

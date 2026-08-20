@@ -1,0 +1,63 @@
+name: shrink
+description: "A batch image resizer for the Windows and Linux desktop."
+publish_to: "none"
+
+# Single source of truth for the application version. `tools/set_version.sh`
+# propagates it to `lib/core/app_version.dart`. See docs/RELEASING.md.
+version: 0.1.0+1
+
+# Matches the toolchain CI pins and the one the kit is developed against.
+environment:
+  sdk: ^3.12.2
+  flutter: ">=3.44.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # The widget kit everything is drawn with. Pinned to a tag, never a branch: a
+  # branch re-resolves on any `pub get` and changes the whole interface without
+  # anything in this repository having moved.
+  #
+  # HTTPS rather than SSH on purpose — CI resolves this anonymously and has no
+  # key. Local work resolves it from the sibling checkout through a gitignored
+  # `pubspec_overrides.yaml`.
+  slate_ui:
+    git:
+      url: https://github.com/alpinsuite/ui-kit.git
+      ref: v0.7.0
+
+  # Decoding and encoding. This is the whole image pipeline: `copyResize` for
+  # the resampling and the per-format encoders for the output.
+  image: ^4.9.1
+  # Native open/save dialogs on both platforms.
+  file_selector: ^1.1.0
+  # Drag-and-drop of files and folders onto the window.
+  desktop_drop: ^0.7.1
+  # Window title, minimum size, and the undecorated title bar.
+  window_manager: ^0.5.2
+  # State wiring (ChangeNotifier).
+  provider: ^6.1.5
+  # Target and output preferences persistence.
+  shared_preferences: ^2.5.5
+
+  collection: ^1.19.0
+  intl: any
+  path: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    # The application mark, for the About dialog and anywhere else the running
+    # program needs its own icon. The platform icons are separate files that
+    # `tools/make_icons.dart` writes from the same drawing:
+    # windows/runner/resources/app_icon.ico and packaging/icons/.
+    - assets/icon/shrink.png
