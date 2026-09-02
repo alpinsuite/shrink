@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Relicensed to GPL-3.0-or-later.** Anyone may still use, study,
+  modify and redistribute it; what changes is that a redistributed copy,
+  modified or not, has to carry its source and the same freedoms with it.
+  Running it and changing it for your own use carry no obligation.
+
+
 ## [0.1.0] - 2026-08-20
 
 First version. Everything below is new.

@@ -77,10 +77,21 @@ jobs:
           sudo apt-get install -y desktop-file-utils
           desktop-file-validate packaging/shrink.desktop
 
+      - name: Software Bill of Materials
+        # CycloneDX, resolved from pubspec.lock and written in the same job
+        # that produced the binary, so it describes this build rather than
+        # somebody's laptop. --check is the gate: it fails on a missing,
+        # stale, or incomplete SBOM.
+        run: |
+          bash tools/sbom.sh
+          bash tools/sbom.sh --check
+
       - uses: actions/upload-artifact@v4
         with:
           name: shrink-linux-x64
-          path: build/linux/x64/release/bundle/
+          path: |
+            build/linux/x64/release/bundle/
+            build/sbom.cdx.json
 
   build-windows:
     name: Build (Windows)
