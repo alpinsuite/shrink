@@ -126,9 +126,14 @@ class _WindowBarState extends State<WindowBar> with WindowListener {
 ///
 /// Drawn rather than shipped as an asset, for the same reason the kit's icons
 /// are: it takes its colour from the theme, and there is no image file to keep
-/// in step with the palette. The proportions match the launcher icon that
-/// `tools/make_icons.dart` generates, so the title bar and the taskbar show the
-/// same mark rather than two that resemble each other.
+/// in step with the palette.
+///
+/// It is the same idea as the launcher icon `tools/make_icons.dart` generates
+/// and deliberately not the same drawing. That one is the brand's tile: a
+/// gradient container, a white glyph, and an arrow pulling the corner in. This
+/// is a monochrome interface mark at sixteen pixels in a title bar, where the
+/// arrow and the second square would collapse into a smudge. Both say the same
+/// thing; only one of them has room to say it in full.
 class _Mark extends StatelessWidget {
   const _Mark({required this.color});
 
