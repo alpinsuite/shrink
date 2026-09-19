@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **A Debian package.** `packaging/build_deb.sh` builds `shrink_<version>_amd64.deb`
+  with its dependencies computed from the binary, a launcher entry, icons, a
+  man page and AppStream metadata. Releases are built against glibc 2.35, so
+  they run on Ubuntu 22.04+ and Debian 12+, and are published through the
+  suite's APT repository at `apt.buache.systems`.
+
 ### Changed
 
 - **Relicensed to GPL-3.0-or-later.** Anyone may still use, study,

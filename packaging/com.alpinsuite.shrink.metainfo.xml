@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.alpinsuite.shrink</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>Shrink</name>
+  <summary>Resize images in batches to a format, a size or a file size</summary>
+  <developer id="systems.buache">
+    <name>Buache Systems</name>
+  </developer>
+
+  <description>
+    <p>
+      Shrink resizes any number of images at once. Add files, add a folder, or
+      drop either onto the window, then say what the results have to be.
+    </p>
+    <ul>
+      <li>Four constraints, each independently switchable: output format, longest edge, quality and a file-size ceiling</li>
+      <li>Recommendations across them: moving one control shows what the others would have to be to satisfy the whole set</li>
+      <li>Reads JPEG, PNG, WebP, GIF, BMP, TIFF, TGA, ICO, PSD and Netpbm</li>
+      <li>Everything happens on the local disk; the program opens no network connection</li>
+      <li>A restrained light and dark theme that follows the desktop</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">shrink.desktop</launchable>
+
+  <url type="homepage">https://buache.systems/shrink/</url>
+  <url type="bugtracker">https://github.com/alpinsuite/shrink/issues</url>
+  <url type="vcs-browser">https://github.com/alpinsuite/shrink</url>
+
+  <provides>
+    <binary>shrink</binary>
+  </provides>
+
+  <categories>
+    <category>Graphics</category>
+    <category>2DGraphics</category>
+    <category>RasterGraphics</category>
+    <category>Utility</category>
+  </categories>
+
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+
+  <requires>
+    <display_length compare="ge">720</display_length>
+  </requires>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="0.1.0" date="2026-08-20">
+      <description>
+        <p>First version.</p>
+      </description>
+    </release>
+  </releases>
+</component>

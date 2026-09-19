@@ -93,6 +93,60 @@ jobs:
             build/linux/x64/release/bundle/
             build/sbom.cdx.json
 
+  package:
+    name: Package (.deb)
+    runs-on: ubuntu-latest
+    # The container the release is built in, by the same digest, so the package
+    # tested here links against the glibc the released one will. See
+    # release.yml for why it is a digest and how to move it.
+    container: ubuntu@sha256:2edbbc5dc405e9612ba3584ce95480277e3eb374407b5505fe26f17df77c7dbc   # 22.04
+    steps:
+      - name: Install toolchain
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates curl git jq unzip xz-utils zip file \
+            clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev \
+            dpkg-dev desktop-file-utils
+
+      - uses: actions/checkout@v4
+      - run: git config --global --add safe.directory '*'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter build linux --release
+      - run: bash packaging/build_deb.sh
+
+      # Installed for real, as root in a throwaway container: this is what
+      # proves the computed Depends resolve on the oldest release supported,
+      # and that every file lands where the desktop entry expects it.
+      - name: The package installs
+        run: |
+          DEBIAN_FRONTEND=noninteractive apt-get install -y ./build/dist/shrink_*_amd64.deb
+          test -x /usr/bin/shrink
+          test -x /usr/lib/shrink/shrink
+          test -f /usr/share/icons/hicolor/256x256/apps/shrink.png
+          test -f /usr/share/metainfo/com.alpinsuite.shrink.metainfo.xml
+          desktop-file-validate /usr/share/applications/shrink.desktop
+          # Every shared library the binary wants is present once the
+          # package's own dependencies are.
+          ! LD_LIBRARY_PATH=/usr/lib/shrink/lib ldd /usr/lib/shrink/shrink | grep "not found"
+          # Asked of dpkg rather than of the disk: the ubuntu image is configured
+          # to drop man pages on install, so the file is rightly not there.
+          dpkg -L shrink | grep -qx /usr/share/man/man1/shrink.1.gz
+
+      - name: The version is written down once
+        run: |
+          VERSION="$(bash tools/set_version.sh)"
+          grep -q "appVersion = '$VERSION'" lib/core/app_version.dart
+          grep -q "<release version=\"$VERSION\"" packaging/com.alpinsuite.shrink.metainfo.xml
+          dpkg-deb -f build/dist/shrink_*_amd64.deb Version | grep -qx "$VERSION"
+
   build-windows:
     name: Build (Windows)
     runs-on: windows-latest

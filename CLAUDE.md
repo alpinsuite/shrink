@@ -45,6 +45,8 @@ dart run tools/make_icons.dart         # after any change to the mark
 
 flutter build windows --release        # build/windows/x64/runner/Release/shrink.exe
 flutter build linux --release          # build/linux/x64/release/bundle/shrink
+bash packaging/build_deb.sh            # build/dist/shrink_<version>_amd64.deb (Debian/Ubuntu host)
+tools/set_version.sh                   # print the version; pass one to set it
 ```
 
 Run the first five before claiming a change is done. They are what the CI
@@ -131,7 +133,7 @@ lib/controller/  QueueController, TargetController, EstimateController,
                  BatchController
 lib/ui/          widgets; AppActions is the single home for every command
 tools/           make_icons.dart, check_hardcoded_strings.sh
-packaging/       desktop entry and icons
+packaging/       desktop entry, icons, metainfo, man page, build_deb.sh
 ```
 
 Dependency direction is one-way: `ui` → `controller` → `model`/`ops`/`io`/`core`.
