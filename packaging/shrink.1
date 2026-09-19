@@ -1,0 +1,35 @@
+.TH SHRINK 1 "2026" "Shrink" "User Commands"
+.SH NAME
+shrink \- batch image resizer
+.SH SYNOPSIS
+.B shrink
+.RI [ FILE | DIRECTORY ]...
+.SH DESCRIPTION
+.B shrink
+resizes any number of images to an output format, a longest edge in pixels, a
+quality and a file-size ceiling. Each constraint can be switched on
+independently, and moving one shows what the others would have to be to satisfy
+the whole set.
+.PP
+Every
+.I FILE
+given on the command line is added to the queue when the window opens. A
+.I DIRECTORY
+is walked, and anything in it that is not an image is ignored. Arguments
+beginning with a dash are ignored.
+.PP
+Nothing is written until the batch is started, and the originals are never
+modified. The program opens no network connection.
+.SH FILES
+Settings are kept under
+.IR $XDG_DATA_HOME/com.alpinsuite.shrink ,
+or
+.I ~/.local/share/com.alpinsuite.shrink
+when that variable is unset.
+.SH BUGS
+Report them at
+.UR https://github.com/alpinsuite/shrink/issues
+.UE .
+.SH SEE ALSO
+.UR https://buache.systems/shrink/
+.UE
