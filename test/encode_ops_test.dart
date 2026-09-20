@@ -115,6 +115,147 @@ void main() {
     });
   });
 
+  // Decoding a JPEG and encoding it again at a sensible quality routinely
+  // produces more bytes than the file had. An application called Shrink must
+  // not hand that back.
+  group('never larger than the source', () {
+    /// A JPEG saved small, which is what re-encoding at 85 will inflate.
+    SourceFile lowQualityJpeg(img.Image image) =>
+        SourceFile.sniff(img.encodeJpg(image, quality: 30));
+
+    test('a re-encode that gains nothing hands back the original', () {
+      final image = photo();
+      final original = lowQualityJpeg(image);
+
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: original,
+        format: OutputFormat.jpeg,
+        quality: 85,
+      );
+
+      expect(result.keptOriginal, isTrue);
+      expect(result.bytes, original.bytes.length);
+      expect(result.data, same(original.bytes), reason: 'byte for byte');
+      expect(result.budgetMet, isTrue);
+    });
+
+    test('the encode it threw away is still a measurement', () {
+      final image = photo();
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: lowQualityJpeg(image),
+        format: OutputFormat.jpeg,
+        quality: 85,
+      );
+      expect(result.samples, isNotEmpty);
+      expect(result.samples.single.bytes, greaterThan(result.bytes));
+    });
+
+    test('an encode that does come out smaller is used', () {
+      final image = photo();
+      final original = SourceFile.sniff(img.encodeJpg(image, quality: 98));
+
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: original,
+        format: OutputFormat.jpeg,
+        quality: 60,
+      );
+
+      expect(result.keptOriginal, isFalse);
+      expect(result.bytes, lessThan(original.bytes.length));
+    });
+
+    test('a resize is always honoured, whatever it weighs', () {
+      // Asked for 300 pixels, the answer is 300 pixels. The original is not a
+      // substitute for an image of a different size.
+      final image = photo();
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: lowQualityJpeg(image),
+        format: OutputFormat.jpeg,
+        quality: 100,
+        maxEdge: 300,
+      );
+      expect(result.keptOriginal, isFalse);
+      expect(result.size.longestEdge, 300);
+    });
+
+    test('a change of format is always honoured', () {
+      final image = photo(width: 120, height: 80);
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: lowQualityJpeg(image),
+        format: OutputFormat.png,
+        quality: 85,
+      );
+      expect(result.keptOriginal, isFalse);
+      expect(img.findFormatForData(result.data!), img.ImageFormat.png);
+    });
+
+    test('the format is read from the bytes, not from the name', () {
+      // A PNG called .jpg: the caller resolves the target to JPEG from the
+      // extension, and the file must not be passed off as one.
+      final image = photo(width: 120, height: 80);
+      final original = SourceFile.sniff(img.encodePng(image));
+      expect(original.format, OutputFormat.png);
+
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: original,
+        format: OutputFormat.jpeg,
+        quality: 100,
+      );
+      expect(result.keptOriginal, isFalse);
+      expect(img.findFormatForData(result.data!), img.ImageFormat.jpg);
+    });
+
+    test('an original over the budget is not an answer to it', () {
+      final image = photo();
+      final original = lowQualityJpeg(image);
+      final budget = original.bytes.length ~/ 2;
+
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: original,
+        format: OutputFormat.jpeg,
+        quality: 85,
+        maxBytes: budget,
+      );
+
+      expect(result.keptOriginal, isFalse);
+      expect(result.bytes, lessThanOrEqualTo(budget));
+    });
+
+    test('an original already inside the budget is kept', () {
+      final image = photo();
+      final original = lowQualityJpeg(image);
+
+      final result = EncodeOps.encodeImage(
+        source: image,
+        original: original,
+        format: OutputFormat.jpeg,
+        quality: 30,
+        maxBytes: original.bytes.length * 4,
+      );
+
+      // Quality 30 again over a quality-30 file does not come out smaller.
+      expect(result.bytes, lessThanOrEqualTo(original.bytes.length));
+      expect(result.budgetMet, isTrue);
+    });
+
+    test('without the original, nothing changes', () {
+      final image = photo();
+      final result = EncodeOps.encodeImage(
+        source: image,
+        format: OutputFormat.jpeg,
+        quality: 85,
+      );
+      expect(result.keptOriginal, isFalse);
+    });
+  });
+
   group('the byte budget', () {
     test('lowers quality until the file fits', () {
       final source = photo();

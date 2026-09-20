@@ -59,7 +59,12 @@ class SettingsController extends ChangeNotifier {
         (format) => format.name == _prefs.getString(_keyFormat),
         orElse: () => OutputFormat.sameAsSource,
       ),
-      maxEdge: _prefs.getInt(_keyMaxEdge),
+      // A switched-off edge is stored as no key at all, which is also what a
+      // first launch looks like. The quality key tells them apart: it is
+      // written by every save and by nothing else.
+      maxEdge: _prefs.containsKey(_keyQuality)
+          ? _prefs.getInt(_keyMaxEdge)
+          : ResizeTarget.firstLaunchMaxEdge,
       quality: _prefs.getInt(_keyQuality) ?? ResizeTarget.defaultQuality,
       maxBytes: _prefs.getInt(_keyMaxBytes),
     );

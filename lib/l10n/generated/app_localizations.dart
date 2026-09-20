@@ -394,6 +394,24 @@ abstract class AppLocalizations {
   /// **'Over budget'**
   String get statusOverBudget;
 
+  /// No description provided for @statusKeptOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept as is'**
+  String get statusKeptOriginal;
+
+  /// No description provided for @statusKeptOriginalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Already as small as these settings can make it, so the copy is the original, untouched.'**
+  String get statusKeptOriginalHint;
+
+  /// No description provided for @previewKeptOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'kept as is'**
+  String get previewKeptOriginal;
+
   /// No description provided for @failureUnreadable.
   ///
   /// In en, this message translates to:

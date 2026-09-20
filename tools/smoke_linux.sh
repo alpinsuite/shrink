@@ -98,11 +98,28 @@ echo "--- the folder afterwards"
 ls -la "$OUT/photos"
 [[ "$DONE" == "1" ]] || fail "Start was clicked and a minute later the resized files are not there"
 
-# Every output has to be an image something else can read, and the defaults
-# (same format, quality 85, no resize) must not have touched the dimensions.
+# Every output has to be an image something else can read, and none may be
+# larger than the file it came from: that is the one thing an application
+# called Shrink cannot do.
 for output in "$OUT"/photos/*-small.*; do
   identify -format '%f  %m %wx%h  %b\n' "$output" || fail "$output is not a readable image"
+  source="${output/-small/}"
+  if (( $(stat -c %s "$output") > $(stat -c %s "$source") )); then
+    fail "$(basename "$output") is larger than $(basename "$source")"
+  fi
 done
+
+# This is a first launch, so the longest edge starts switched on at 1600: the
+# two images larger than that come out at 1600, and the one already smaller is
+# left at its size — and, being a BMP nothing can squeeze, is the original.
+[[ "$(identify -format '%w' "$OUT/photos/landscape-small.jpg")" == "1600" ]] \
+  || fail "a first launch did not cap the landscape at 1600 pixels"
+[[ "$(identify -format '%h' "$OUT/photos/portrait-small.png")" == "1600" ]] \
+  || fail "a first launch did not cap the portrait at 1600 pixels"
+[[ "$(identify -format '%wx%h' "$OUT/photos/square-small.bmp")" == "800x800" ]] \
+  || fail "an image already under the cap was resized"
+cmp -s "$OUT/photos/square.bmp" "$OUT/photos/square-small.bmp" \
+  || fail "a file that could not be made smaller was not kept as it is"
 
 # Rule 4 of this project: a source file is never overwritten.
 ( cd "$OUT/photos" && sha256sum --quiet -c ../originals.sha256 ) \

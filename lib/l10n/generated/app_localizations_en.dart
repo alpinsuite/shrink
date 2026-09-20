@@ -160,6 +160,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusOverBudget => 'Over budget';
 
   @override
+  String get statusKeptOriginal => 'Kept as is';
+
+  @override
+  String get statusKeptOriginalHint =>
+      'Already as small as these settings can make it, so the copy is the original, untouched.';
+
+  @override
+  String get previewKeptOriginal => 'kept as is';
+
+  @override
   String get failureUnreadable => 'Not an image this application can read';
 
   @override

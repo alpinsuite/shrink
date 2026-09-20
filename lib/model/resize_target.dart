@@ -28,6 +28,16 @@ class ResizeTarget {
   /// back up".
   static const int defaultQuality = 85;
 
+  /// The longest edge a first launch starts with, switched on.
+  ///
+  /// With every constraint off, Start re-encodes each file at the size it
+  /// already is, which makes nothing meaningfully smaller: the one thing the
+  /// application is opened for would not happen until a box was ticked. 1600
+  /// pixels is comfortably more than a screen shows and a fraction of what a
+  /// camera produces. It applies once — after the first change to the target,
+  /// what was saved is what is used, including an edge deliberately turned off.
+  static const int firstLaunchMaxEdge = 1600;
+
   static const int minQuality = 1;
   static const int maxQuality = 100;
 

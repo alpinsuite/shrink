@@ -72,6 +72,7 @@ class EncodeResult {
     required this.quality,
     required this.budgetMet,
     required this.samples,
+    this.keptOriginal = false,
     this.data,
     this.outputPath,
   });
@@ -96,8 +97,41 @@ class EncodeResult {
   /// attempts are the most informative ones and are deliberately included.
   final List<SizeSample> samples;
 
+  /// True when [data] is the source file, byte for byte, because encoding it
+  /// again produced nothing smaller. See [EncodeOps.encodeImage].
+  final bool keptOriginal;
+
   final Uint8List? data;
   final String? outputPath;
+}
+
+/// The file an image was decoded from, for the one decision that needs it.
+///
+/// [format] is what the bytes *are*, sniffed from their header, and not what
+/// the file is called: a PNG named `.jpg` must not be passed off as a JPEG
+/// because its name and the target agree.
+@immutable
+class SourceFile {
+  const SourceFile({required this.bytes, required this.format});
+
+  /// Reads the header of [bytes]. [format] is null for a format this
+  /// application can read but not write, which can therefore never be "the
+  /// same format as the output".
+  factory SourceFile.sniff(Uint8List bytes) => SourceFile(
+    bytes: bytes,
+    format: switch (img.findFormatForData(bytes)) {
+      img.ImageFormat.jpg => OutputFormat.jpeg,
+      img.ImageFormat.png => OutputFormat.png,
+      img.ImageFormat.tiff => OutputFormat.tiff,
+      img.ImageFormat.bmp => OutputFormat.bmp,
+      img.ImageFormat.tga => OutputFormat.tga,
+      img.ImageFormat.gif => OutputFormat.gif,
+      _ => null,
+    },
+  );
+
+  final Uint8List bytes;
+  final OutputFormat? format;
 }
 
 /// The source could not be read as an image.
@@ -137,6 +171,7 @@ abstract final class EncodeOps {
 
     final result = encodeImage(
       source: image,
+      original: SourceFile.sniff(bytes),
       format: request.format,
       quality: request.quality,
       maxEdge: request.maxEdge,
@@ -155,6 +190,7 @@ abstract final class EncodeOps {
       quality: result.quality,
       budgetMet: result.budgetMet,
       samples: result.samples,
+      keptOriginal: result.keptOriginal,
       outputPath: outputPath,
       // Dropped unless asked for, now that it has been written.
       data: request.wantBytes || outputPath == null ? result.data : null,
@@ -191,7 +227,55 @@ abstract final class EncodeOps {
   /// re-decode a 12 MP photograph on every frame. A preview computed by a
   /// second implementation would eventually disagree with the file on disk, and
   /// then every number in the interface would be worthless.
+  ///
+  /// **The output is never larger than the file it came from.** Decoding a
+  /// JPEG and encoding it again at quality 85 routinely produces *more* bytes
+  /// than the original had, and an application called Shrink that hands back a
+  /// bigger file has done the opposite of its job. So when [original] is given,
+  /// nothing was resized, the format has not changed, and the encode gained
+  /// nothing, the result is the original file, byte for byte — which is also
+  /// lossless, where the re-encode would have been a generation of damage for
+  /// no benefit. Both callers pass [original], so the preview shows this too.
   static EncodeResult encodeImage({
+    required img.Image source,
+    required OutputFormat format,
+    required int quality,
+    SourceFile? original,
+    int? maxEdge,
+    int? maxBytes,
+  }) {
+    final result = _encodeImage(
+      source: source,
+      format: format,
+      quality: quality,
+      maxEdge: maxEdge,
+      maxBytes: maxBytes,
+    );
+    if (original == null ||
+        original.format != format ||
+        result.size != result.sourceSize ||
+        result.bytes < original.bytes.length) {
+      return result;
+    }
+    // Over a budget the original is not an answer, however the search fared:
+    // the smallest attempt is still the closest anyone got.
+    if (maxBytes != null && original.bytes.length > maxBytes) return result;
+
+    return EncodeResult(
+      sourceSize: result.sourceSize,
+      size: result.size,
+      bytes: original.bytes.length,
+      quality: result.quality,
+      budgetMet: true,
+      // Kept: they are real measurements of this image, and the estimator
+      // learns from them whether or not their output was used.
+      samples: result.samples,
+      keptOriginal: true,
+      data: original.bytes,
+    );
+  }
+
+  static EncodeResult _encodeImage({
     required img.Image source,
     required OutputFormat format,
     required int quality,

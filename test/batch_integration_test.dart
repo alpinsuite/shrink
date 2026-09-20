@@ -160,6 +160,47 @@ void main() {
     }
   });
 
+  test('never writes a file larger than the one it came from', () async {
+    // The defaults, on a JPEG that was saved small: encoding it again at 85
+    // would come out bigger. What lands on the disk has to be the original.
+    final small = write(
+      'small.jpg',
+      img.encodeJpg(photo(900, 600, 4), quality: 35),
+    );
+    final before = small.readAsBytesSync();
+
+    final (queue, batch) = await run(
+      paths: <String>[small.path],
+      configure: (target) => target
+        ..maxEdge = null
+        ..quality = 85,
+    );
+
+    final item = queue.items.single;
+    expect(item.status, BatchItemStatus.done);
+    expect(item.keptOriginal, isTrue);
+    expect(batch.summary.written, 1);
+
+    final output = File(item.outputPath!);
+    expect(output.path, isNot(small.path));
+    expect(output.readAsBytesSync(), before, reason: 'byte for byte');
+    expect(item.outputBytes, before.length);
+    expect(small.readAsBytesSync(), before, reason: 'and the source untouched');
+  });
+
+  test('a first launch starts with the longest edge switched on', () async {
+    final settings = await SettingsController.load();
+    expect(settings.target.maxEdge, ResizeTarget.firstLaunchMaxEdge);
+  });
+
+  test('an edge that was switched off stays off', () async {
+    final settings = await SettingsController.load();
+    await settings.setTarget(settings.target.withMaxEdge(null));
+
+    final reloaded = await SettingsController.load();
+    expect(reloaded.target.maxEdge, isNull);
+  });
+
   test('never writes over a source file', () async {
     // The most destructive thing this application could do: an empty suffix,
     // the same format, and the originals as somebody's only copy.
