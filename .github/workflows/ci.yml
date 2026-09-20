@@ -78,12 +78,12 @@ jobs:
           desktop-file-validate packaging/shrink.desktop
 
       # The release binary, on a real X server, handed a folder of images. It
-      # has to still be running twenty seconds later with a window on the
-      # screen that has something drawn in it. -noreset because Xvfb otherwise
+      # has to draw a window, run the batch when Start is clicked, and leave the
+      # resized files beside untouched originals. -noreset because Xvfb otherwise
       # regenerates whenever its last client leaves.
-      - name: It starts, and draws a window
+      - name: It starts, and resizes a folder of images
         run: |
-          sudo apt-get install -y xvfb x11-utils x11-apps imagemagick
+          sudo apt-get install -y xvfb x11-utils x11-apps imagemagick xdotool
           xvfb-run -a -s "-screen 0 1600x1000x24 -noreset" bash tools/smoke_linux.sh
 
       # Kept whether or not the step above passed: a smoke test can say the
