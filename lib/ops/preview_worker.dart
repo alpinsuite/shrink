@@ -48,11 +48,16 @@ class PreviewMeasurement {
     required this.quality,
     required this.budgetMet,
     required this.samples,
+    this.keptOriginal = false,
     this.data,
   });
 
   final PixelSize size;
   final int bytes;
+
+  /// True when the pipeline handed the source file back unchanged because
+  /// encoding it again made it no smaller. [bytes] is then the source's size.
+  final bool keptOriginal;
 
   /// The quality actually used, which is lower than requested when a byte
   /// budget had to be met.
@@ -220,6 +225,10 @@ void _entry(SendPort send) {
   send.send(requests.sendPort);
 
   img.Image? held;
+  // The file itself, beside its pixels: the pipeline hands it back untouched
+  // when encoding again would only make it bigger, and the preview has to show
+  // what the batch will write.
+  SourceFile? heldFile;
 
   requests.listen((dynamic message) {
     if (message is! _Envelope) return;
@@ -234,6 +243,7 @@ void _entry(SendPort send) {
           return;
         }
         held = decoded;
+        heldFile = SourceFile.sniff(data);
         send.send(
           _Envelope(
             message.id,
@@ -252,7 +262,7 @@ void _entry(SendPort send) {
           send.send(_Envelope(message.id, const _Failure()));
           return;
         }
-        send.send(_Envelope(message.id, _measure(source, request)));
+        send.send(_Envelope(message.id, _measure(source, heldFile, request)));
         return;
       }
     } catch (_) {
@@ -269,9 +279,14 @@ void _entry(SendPort send) {
 /// [EncodeOps.encodeImage] is the single implementation of resize-encode-meet-
 /// the-budget; this adds nothing to it but the decision about whether to ship
 /// the pixels back for display.
-PreviewMeasurement _measure(img.Image source, _MeasureRequest request) {
+PreviewMeasurement _measure(
+  img.Image source,
+  SourceFile? original,
+  _MeasureRequest request,
+) {
   final result = EncodeOps.encodeImage(
     source: source,
+    original: original,
     format: request.format,
     quality: request.target.quality,
     maxEdge: request.target.maxEdge,
@@ -284,6 +299,7 @@ PreviewMeasurement _measure(img.Image source, _MeasureRequest request) {
     quality: result.quality,
     budgetMet: result.budgetMet,
     samples: result.samples,
+    keptOriginal: result.keptOriginal,
     data: request.wantImage && result.bytes <= _maxPreviewBytes
         ? result.data
         : null,

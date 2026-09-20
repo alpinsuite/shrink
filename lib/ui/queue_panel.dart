@@ -250,8 +250,12 @@ class _Status extends StatelessWidget {
     final theme = context.slate;
 
     final overBudget = item.status == BatchItemStatus.done && !item.budgetMet;
+    final keptOriginal =
+        item.status == BatchItemStatus.done && item.keptOriginal;
     final label = overBudget
         ? l10n.statusOverBudget
+        : keptOriginal
+        ? l10n.statusKeptOriginal
         : item.status.labelFor(l10n);
 
     final color = switch (item.status) {
@@ -262,7 +266,9 @@ class _Status extends StatelessWidget {
       _ => theme.palette.inkDim,
     };
 
-    final tooltip = item.failure?.labelFor(l10n);
+    final tooltip =
+        item.failure?.labelFor(l10n) ??
+        (keptOriginal ? l10n.statusKeptOriginalHint : null);
     final text = Text(
       label,
       overflow: TextOverflow.ellipsis,

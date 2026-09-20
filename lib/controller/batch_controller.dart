@@ -237,6 +237,7 @@ class BatchController extends ChangeNotifier {
         outputPath: result.outputPath,
         outputQuality: result.quality,
         budgetMet: result.budgetMet,
+        keptOriginal: result.keptOriginal,
       );
     } on DecodeFailure {
       return item.copyWith(

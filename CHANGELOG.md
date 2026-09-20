@@ -6,6 +6,33 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-20
+
+### Fixed
+
+- **Shrink never writes a file larger than the one it came from.** Decoding a
+  JPEG and saving it again at quality 85 routinely produces more bytes than the
+  original had, and 0.1.0 wrote that and reported it, in red, as "58% larger".
+  When nothing was resized, the format has not changed and encoding again gains
+  nothing, the copy is now the original file, byte for byte, and the row says
+  **Kept as is**. That is also lossless, where the re-encode was a generation of
+  damage for no benefit. A resize, a change of format and a file-size ceiling
+  the original does not meet are all still honoured. The preview goes through
+  the same rule, so it shows what the batch will write.
+
+### Changed
+
+- **A first launch starts with the longest edge switched on, at 1600 pixels.**
+  With every constraint off, pressing Start made nothing smaller, which is the
+  one thing the application is opened for. It applies once: after the first
+  change, what was saved is what is used, including an edge turned off on
+  purpose.
+
+### Added
+
+- CI starts the Linux build on a real X server, hands it a folder of images,
+  clicks Start, and checks the files that land on the disk.
+
 ## [0.1.0] - 2026-09-19
 
 First version. Everything below is new.

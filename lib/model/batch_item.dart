@@ -59,6 +59,7 @@ class BatchItem {
     this.outputPath,
     this.outputQuality,
     this.budgetMet = true,
+    this.keptOriginal = false,
     this.failure,
   });
 
@@ -79,6 +80,11 @@ class BatchItem {
   /// pulled. The file is still written — it is the smallest this application
   /// could make it — and the row says so.
   final bool budgetMet;
+
+  /// True when the file written is the source, byte for byte: nothing was
+  /// resized, the format did not change, and encoding it again would only have
+  /// made it bigger. The row says so rather than claiming a saving of zero.
+  final bool keptOriginal;
 
   final BatchItemFailure? failure;
 
@@ -107,6 +113,7 @@ class BatchItem {
     String? outputPath,
     int? outputQuality,
     bool? budgetMet,
+    bool? keptOriginal,
     BatchItemFailure? failure,
   }) {
     return BatchItem(
@@ -119,6 +126,7 @@ class BatchItem {
       outputPath: outputPath ?? this.outputPath,
       outputQuality: outputQuality ?? this.outputQuality,
       budgetMet: budgetMet ?? this.budgetMet,
+      keptOriginal: keptOriginal ?? this.keptOriginal,
       failure: failure ?? this.failure,
     );
   }

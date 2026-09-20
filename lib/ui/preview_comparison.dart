@@ -119,7 +119,9 @@ class PreviewComparison extends StatelessWidget {
     return <String>[
       l10n.dimensions(size.width, size.height),
       estimate.measured ? formatted : l10n.approximately(formatted),
-      if (quality != null && estimate.measured && estimate.qualityApplies)
+      if (estimate.keptOriginal)
+        l10n.previewKeptOriginal
+      else if (quality != null && estimate.measured && estimate.qualityApplies)
         l10n.previewQualityUsed(quality),
     ].join('  ');
   }

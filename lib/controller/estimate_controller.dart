@@ -51,6 +51,7 @@ class TargetEstimate {
     this.outputBytes,
     this.measured = false,
     this.budgetMet = true,
+    this.keptOriginal = false,
     this.quality,
     this.qualityApplies = false,
     this.qualityRecommendation,
@@ -70,6 +71,11 @@ class TargetEstimate {
 
   /// False when the byte budget could not be met at all.
   final bool budgetMet;
+
+  /// True when these settings leave the selected file as it is, because
+  /// encoding it again would make it no smaller. The quality shown would then
+  /// describe an encode that was thrown away, so the caption drops it.
+  final bool keptOriginal;
 
   /// The quality the pipeline settled on, which is below the requested one when
   /// the budget forced it down.
@@ -319,6 +325,7 @@ class EstimateController extends ChangeNotifier {
       outputBytes: bytes,
       measured: measured,
       budgetMet: measurement?.budgetMet ?? true,
+      keptOriginal: measurement?.keptOriginal ?? false,
       quality: measurement?.quality ?? resize.quality,
       qualityApplies: format.hasQuality,
       qualityRecommendation: _recommendQuality(model, format, resize, size),

@@ -65,6 +65,9 @@
   "statusSkipped": "Skipped",
   "statusFailed": "Failed",
   "statusOverBudget": "Over budget",
+  "statusKeptOriginal": "Kept as is",
+  "statusKeptOriginalHint": "Already as small as these settings can make it, so the copy is the original, untouched.",
+  "previewKeptOriginal": "kept as is",
 
   "failureUnreadable": "Not an image this application can read",
   "failureNoEncoder": "This format can be read but not written. Choose a target format.",
