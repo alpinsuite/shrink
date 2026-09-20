@@ -19,8 +19,6 @@ All notable changes to this project are documented here. The format follows
   damage for no benefit. A resize, a change of format and a file-size ceiling
   the original does not meet are all still honoured. The preview goes through
   the same rule, so it shows what the batch will write.
-- The file table reaches the edge of its panel when the window opens, instead of
-  stopping short of it.
 
 ### Changed
 

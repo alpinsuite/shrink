@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:slate_ui/slate_ui.dart';
@@ -49,60 +47,47 @@ class QueuePanel extends StatelessWidget {
           // than as text poured into the corner of the frame.
           child: Padding(
             padding: const EdgeInsets.only(left: 6, right: 6),
-            // The File column takes whatever the four fixed ones leave, so the
-            // table reaches the edge of its panel instead of stopping short of
-            // it. The grid copies its columns into its own state when it is
-            // first built — that is how a column a user has dragged stays
-            // dragged — so this sets the width the table opens at and does not
-            // follow the window afterwards. A column that really stretches is a
-            // change for the kit, not for this file.
-            child: LayoutBuilder(
-              builder: (context, constraints) => SlateDataGrid(
-                columns: <SlateGridColumn>[
-                  SlateGridColumn(
-                    id: 'file',
-                    title: l10n.columnFile,
-                    width: math.max(260, constraints.maxWidth - _fixedColumns),
-                  ),
-                  SlateGridColumn(
-                    id: 'source',
-                    title: l10n.columnSource,
-                    width: 150,
-                  ),
-                  SlateGridColumn(
-                    id: 'output',
-                    title: l10n.columnOutput,
-                    width: 150,
-                  ),
-                  SlateGridColumn(
-                    id: 'change',
-                    title: l10n.columnChange,
-                    width: 100,
-                    alignment: Alignment.centerRight,
-                  ),
-                  SlateGridColumn(
-                    id: 'status',
-                    title: l10n.columnStatus,
-                    width: 120,
-                  ),
-                ],
-                rowCount: queue.length,
-                isRowSelected: (row) => row == queue.selectedIndex,
-                onRowTap: (row) => queue.selectedIndex = row,
-                rowSemanticLabel: (row) => queue.items[row].name,
-                // The grid pads its *headers* but not its cells, so without this
-                // every value sits a few pixels left of the column it belongs to
-                // and the first one is flush against the window edge. Matching the
-                // header's own padding is what lines the two up.
-                cellBuilder: (context, row, column) => Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: theme.metrics.pad / 2,
-                  ),
-                  child: _Cell(
-                    item: queue.items[row],
-                    columnId: column.id,
-                    maxEdge: target.maxEdge,
-                  ),
+            child: SlateDataGrid(
+              columns: <SlateGridColumn>[
+                SlateGridColumn(id: 'file', title: l10n.columnFile, width: 260),
+                SlateGridColumn(
+                  id: 'source',
+                  title: l10n.columnSource,
+                  width: 150,
+                ),
+                SlateGridColumn(
+                  id: 'output',
+                  title: l10n.columnOutput,
+                  width: 150,
+                ),
+                SlateGridColumn(
+                  id: 'change',
+                  title: l10n.columnChange,
+                  width: 100,
+                  alignment: Alignment.centerRight,
+                ),
+                SlateGridColumn(
+                  id: 'status',
+                  title: l10n.columnStatus,
+                  width: 120,
+                ),
+              ],
+              rowCount: queue.length,
+              isRowSelected: (row) => row == queue.selectedIndex,
+              onRowTap: (row) => queue.selectedIndex = row,
+              rowSemanticLabel: (row) => queue.items[row].name,
+              // The grid pads its *headers* but not its cells, so without this
+              // every value sits a few pixels left of the column it belongs to
+              // and the first one is flush against the window edge. Matching the
+              // header's own padding is what lines the two up.
+              cellBuilder: (context, row, column) => Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: theme.metrics.pad / 2,
+                ),
+                child: _Cell(
+                  item: queue.items[row],
+                  columnId: column.id,
+                  maxEdge: target.maxEdge,
                 ),
               ),
             ),
@@ -111,9 +96,6 @@ class QueuePanel extends StatelessWidget {
       ],
     );
   }
-
-  /// Source, Output, Change and Status, as declared above.
-  static const double _fixedColumns = 150 + 150 + 100 + 120;
 }
 
 /// Add, remove, clear.
